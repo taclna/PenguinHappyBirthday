@@ -1,0 +1,17 @@
+# Loại trừ các file lớn và file build
+*.ipch
+*.exe
+*.lib
+*.dll
+*.pdb
+*.ilk
+*.obj
+*.log
+*.tlog
+*.idb
+
+# Loại trừ thư mục build
+.vs/
+x64/
+Debug/
+Release/
