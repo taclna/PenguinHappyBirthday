@@ -1,0 +1,1 @@
+g++ -Isource/include -Lsource/lib -o main main.cpp Texture.cpp Windows.cpp Dot.cpp Threat.cpp ThreatRedFish.cpp Characters.cpp ThreatBigFish.cpp Collision.cpp Skill.cpp ALL.cpp GameOver.cpp Reset.cpp GameWin.cpp TimeAndLevel.cpp Menu.cpp Sound.cpp -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_mixer -lSDL2_ttf
