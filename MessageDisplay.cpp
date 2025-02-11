@@ -3,7 +3,7 @@
 
 // Constructor: Loads messages from the file
 MessageDisplay::MessageDisplay(SDL_Renderer* renderer, const std::string& filePath, TTF_Font* font, int x, int y)
-    : renderer(renderer), font(font), posX(x), posY(y), currentMessageIndex(0), finished(false), lastTime(0), currentTime(0), timeDelta(3000) {
+    : renderer(renderer), font(font), posX(x), posY(y), currentMessageIndex(0), finished(false), lastTime(0), currentTime(0), timeDelta(3000), isRender(false) {
     loadMessages(filePath);
 }
 
@@ -42,7 +42,7 @@ void MessageDisplay::handleEvent(SDL_Event& e) {
 }
 
 // Chuyển std::wstring thành std::string (UTF-8)
-std::string wstring_to_string(const std::wstring& wstr) {
+std::string MessageDisplay:: wstring_to_string(const std::wstring& wstr) {
     int size_needed = WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), (int)wstr.size(), nullptr, 0, nullptr, nullptr);
     std::string str(size_needed, 0);
     WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), (int)wstr.size(), &str[0], size_needed, nullptr, nullptr);
@@ -51,6 +51,7 @@ std::string wstring_to_string(const std::wstring& wstr) {
 
 // Render the current message
 void MessageDisplay::render() {
+    if (!isRender) return;
     if (currentMessageIndex < messages.size()) {
         SDL_Color textColor = { 246, 190, 239, 255 };  // White text
         SDL_Surface* textSurface = TTF_RenderUTF8_Blended(font, messages[currentMessageIndex].c_str(), textColor);
@@ -75,6 +76,10 @@ bool MessageDisplay::isFinished() {
 }
 
 void MessageDisplay::update() {
+    if (!isRender) {
+        lastTime = SDL_GetTicks();
+        return;
+    }
     currentTime = SDL_GetTicks();
     if (currentTime - lastTime >= timeDelta) {
         if (currentMessageIndex < messages.size()) {
@@ -82,4 +87,12 @@ void MessageDisplay::update() {
         }
         lastTime = currentTime;
     }
+}
+
+bool MessageDisplay::checkRendering() {
+    return isRender;
+}
+
+void MessageDisplay::setRender() {
+    isRender = true;
 }

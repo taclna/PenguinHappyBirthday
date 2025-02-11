@@ -23,6 +23,8 @@ public:
     void render();
     bool isFinished();
     void update();
+    void setRender();
+    bool checkRendering();
     std::string wstring_to_string(const std::wstring& wstr);
 
 private:
@@ -33,6 +35,7 @@ private:
     int posX, posY;
     Uint32 lastTime, currentTime, timeDelta;
     bool finished;
+    bool isRender;
 
     // Helper function to load messages from file
     void loadMessages(const std::string& filePath);

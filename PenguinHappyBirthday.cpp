@@ -52,6 +52,16 @@ std::vector<std::string> loadImagesFromDirectory(const std::string& directory) {
     return images;
 }
 
+std::string loadImgFromDirectory(const std::string& directory) {
+    std::vector<std::string> images;
+    for (const auto& entry : std::filesystem::directory_iterator(directory)) {
+        if (entry.is_regular_file()) {
+            images.push_back(entry.path().string());
+        }
+    }
+    return images[0];
+}
+
 SDL_Texture* loadTexture(const std::string& path, SDL_Renderer* renderer) {
     SDL_Surface* loadedSurface = IMG_Load(path.c_str());
     if (!loadedSurface) {
@@ -139,6 +149,8 @@ int main(int argc, char* argv[]) {
 
     std::vector<std::string> presentImgs = loadImagesFromDirectory("data\\Present");
 
+    std::string giftPath = loadImgFromDirectory("data\\Custom\\Gift");
+
     TTF_Font* font = TTF_OpenFont("data\\JingleBalonsGTDemo.ttf", 80);
     TTF_Font* messageFont = TTF_OpenFont("data\\Dongle-Bold.ttf", 24);
     if (!font) {
@@ -146,10 +158,10 @@ int main(int argc, char* argv[]) {
         return -1;
     }
 
-    std::string name = getNameFromFile("data\\name.txt");
-    std::string targetTime = getNameFromFile("data\\time.txt");
+    std::string name = getNameFromFile("data\\Custom\\name.txt");
+    std::string targetTime = getNameFromFile("data\\Custom\\time.txt");
 
-    MessageDisplay message(renderer, "data\\message.txt", messageFont, 500, 500);
+    MessageDisplay message(renderer, "data\\Custom\\message.txt", messageFont, 500, 500);
     Penguin penguin(renderer,&message,  candleOffImgs, candleOnImgs, blowCandleImgs, showCandleImgs);
 
     PenguinVolumeProcessor volumeProcessor(&penguin);
@@ -160,13 +172,13 @@ int main(int argc, char* argv[]) {
 
     MovingText movingText(renderer, font, name, 400, 325);
     customTime customTime(renderer, font,&penguin, targetTime);
-    Gift gift(renderer, "data\\gift.png", &present,520, 450, 50);
+    Gift gift(renderer, giftPath.c_str(), &present, 520, 450, 50);
 
 
     MicrophoneCapture microphoneCapture;
     microphoneCapture.setVolumeProcessor(&volumeProcessor);
 
-    std::vector<std::string> circularImages = loadImagesFromDirectory("data\\thugiang");
+    std::vector<std::string> circularImages = loadImagesFromDirectory("data\\Custom\\Person");
     viewer.addImages(circularImages);
 
     if (!microphoneCapture.initialize()) {
@@ -223,12 +235,15 @@ int main(int argc, char* argv[]) {
         background.render(renderer);
         penguin.render(renderer);
         customTime.render();
+        message.update();
+        message.render();
         if (background.checkImgShown()) {
             movingText.render();
             viewer.render();
-
-            message.update();
-            message.render();
+            if (message.checkRendering() == false) {
+                message.setRender();
+            }
+            
         }
         present.update();
         present.render();
