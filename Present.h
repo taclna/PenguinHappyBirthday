@@ -23,6 +23,7 @@ public:
 
     bool isMouseInside(int x, int y);
     bool isRendering();
+    bool checkDone();
 
 private:
     SDL_Renderer* renderer;
@@ -31,6 +32,7 @@ private:
 
     int currentImageIndex;
     bool isAnimating;
+    bool isDone;
     Uint32 lastUpdateTime;
 
     SDL_Rect position;

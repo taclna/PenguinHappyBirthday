@@ -10,7 +10,7 @@
 class customTime
 {
 public:
-	customTime(SDL_Renderer* renderer, TTF_Font* font ,Penguin* penguin);
+	customTime(SDL_Renderer* renderer, TTF_Font* font ,Penguin* penguin, std::string& targetTime);
 	~customTime();
 	void update();
 	void render();
@@ -26,6 +26,7 @@ private:
 	Background* background;
 	SDL_Texture* texture;
 	Penguin* penguin;
+	std::string targetTime;
 	int textWidth, textHeight;
 	bool isRender;
 

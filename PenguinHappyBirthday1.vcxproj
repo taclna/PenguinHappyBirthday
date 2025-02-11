@@ -143,6 +143,7 @@
   <ItemGroup>
     <ClCompile Include="Background.cpp" />
     <ClCompile Include="CircularImageViewer.cpp" />
+    <ClCompile Include="Gift.cpp" />
     <ClCompile Include="Ice.cpp" />
     <ClCompile Include="MessageDisplay.cpp" />
     <ClCompile Include="MicrophoneCapture.cpp" />
@@ -156,6 +157,7 @@
   <ItemGroup>
     <ClInclude Include="Background.h" />
     <ClInclude Include="CircularImageViewer.h" />
+    <ClInclude Include="Gift.h" />
     <ClInclude Include="Ice.h" />
     <ClInclude Include="IVolumeProcessor.h" />
     <ClInclude Include="MessageDisplay.h" />

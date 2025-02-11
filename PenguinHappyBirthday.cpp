@@ -14,6 +14,7 @@
 #include "MessageDisplay.h"
 #include "Present.h"
 #include "customTime.h"
+#include "Gift.h"
 
 
 #define handCursor SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_HAND)
@@ -27,7 +28,7 @@ std::string getNameFromFile(std::string filePath) {
     std::string line;
 
     if (!file) {
-        std::cerr << "Không thể mở file!" << std::endl;
+        std::cerr << "Không thể mở file! " << filePath << std::endl;
     }
     if (file.is_open()) {
         
@@ -146,6 +147,7 @@ int main(int argc, char* argv[]) {
     }
 
     std::string name = getNameFromFile("data\\name.txt");
+    std::string targetTime = getNameFromFile("data\\time.txt");
 
     MessageDisplay message(renderer, "data\\message.txt", messageFont, 500, 500);
     Penguin penguin(renderer,&message,  candleOffImgs, candleOnImgs, blowCandleImgs, showCandleImgs);
@@ -157,7 +159,8 @@ int main(int argc, char* argv[]) {
     Present present(renderer, presentImgs, "data\\39026__wildweasel__keypickup.wav", {490, 350, 250, 250}, &message, &penguin);
 
     MovingText movingText(renderer, font, name, 400, 325);
-    customTime customTime(renderer, font,&penguin);
+    customTime customTime(renderer, font,&penguin, targetTime);
+    Gift gift(renderer, "data\\gift.png", &present,520, 450, 50);
 
 
     MicrophoneCapture microphoneCapture;
@@ -188,16 +191,11 @@ int main(int argc, char* argv[]) {
                 int mouseX = e.motion.x;
                 int mouseY = e.motion.y;
 
-                if (penguin.isMouseHovering(mouseX, mouseY)) {
-                    SDL_SetCursor(handCursor); // Đổi con trỏ thành "hand"
+                if (penguin.isMouseHovering(mouseX, mouseY) || present.isMouseInside(mouseX, mouseY) || gift.isMouseInside()) {
+                    SDL_SetCursor(handCursor); 
                 }
                 else {
-                    if (present.isMouseInside(mouseX, mouseY) && present.isRendering()) {
-                        SDL_SetCursor(handCursor); // Đổi con trỏ thành "hand"
-                    }
-                    else {
-                        SDL_SetCursor(defaultCursor); // Trả về con trỏ mặc định
-                    }
+                    SDL_SetCursor(defaultCursor); 
                 }
 
                 
@@ -208,6 +206,7 @@ int main(int argc, char* argv[]) {
             }
 
             penguin.handleEvent(e);
+            gift.handleEvent(e);
         }
 
         penguin.update();
@@ -215,6 +214,7 @@ int main(int argc, char* argv[]) {
         movingText.update();
         viewer.update();
         customTime.update();
+        gift.update();
 
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
@@ -232,20 +232,28 @@ int main(int argc, char* argv[]) {
         }
         present.update();
         present.render();
+        gift.render(renderer);
 
         SDL_RenderPresent(renderer);
     }
 
     Mix_FreeMusic(backgroundMusic);
 
-    penguin.~Penguin();
-    background.~Background();
-    movingText.~MovingText();
-    viewer.~CircularImageViewer();
-    microphoneCapture.stop();
-    microphoneCapture.~MicrophoneCapture();
-    present.~Present();
-    customTime.~customTime();
+    font = nullptr;
+    messageFont = nullptr;
+    try {
+        penguin.~Penguin();
+        background.~Background();
+        movingText.~MovingText();
+        viewer.~CircularImageViewer();
+        microphoneCapture.stop();
+        microphoneCapture.~MicrophoneCapture();
+        present.~Present();
+        customTime.~customTime();
+    }
+    catch (std::exception e) {
+
+    }
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     IMG_Quit();

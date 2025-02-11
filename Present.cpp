@@ -2,7 +2,8 @@
 
 // Constructor
 Present::Present(SDL_Renderer* renderer, const std::vector<std::string>& imagePaths, const std::string& soundPath, SDL_Rect position, MessageDisplay* message, Penguin* penguin)
-    : renderer(renderer), currentImageIndex(0), isAnimating(false), lastUpdateTime(0), soundEffect(nullptr), position(position), message(message), penguin(penguin), isRender(false) {
+    : renderer(renderer), currentImageIndex(0), isAnimating(false), lastUpdateTime(0), soundEffect(nullptr), position(position), message(message), penguin(penguin), isRender(false)
+      , isDone(false) {
 
     // Load images
     for (const std::string& path : imagePaths) {
@@ -78,6 +79,7 @@ void Present::update() {
                 lastUpdateTime = currentTime;
             }
             else {
+                isDone = true;
                 isAnimating = false;
             }
         }
@@ -110,4 +112,8 @@ bool Present::isRunning() const {
 
 bool Present::isRendering() {
     return isRender;
+}
+
+bool Present::checkDone() {
+    return isDone;
 }
