@@ -11,5 +11,4 @@
 
 # Loại trừ thư mục build
 .vs/
-x64/
 Release/
