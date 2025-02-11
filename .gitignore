@@ -1,7 +1,6 @@
 # Loại trừ các file lớn và file build
 *.ipch
 *.lib
-*.pdb
 *.ilk
 *.obj
 *.log
